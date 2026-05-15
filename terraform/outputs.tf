@@ -1,5 +1,5 @@
 output "ec2_public_28" {
-  value     = aws_instance.ec2_public_28.public_ip
+  value     = aws_eip.eip1.public_ip
   sensitive = true
 }
 

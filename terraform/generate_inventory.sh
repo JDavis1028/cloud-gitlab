@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-cat > ../ec2_ansi/inventory/hosts.ini <<EOF
+cat > ../ansible/inventory/hosts.ini <<EOF
 EOF
 
 echo "" >> ../ansible/inventory/hosts.ini

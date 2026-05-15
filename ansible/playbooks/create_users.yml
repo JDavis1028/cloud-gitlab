@@ -22,7 +22,7 @@
           ansible.builtin.command:
             cmd: mkdir /home/j/.ssh
 
-        - name: Copy SSH Key from host to cloud
-          ansible.builtin.copy:
-            src: /home/j/ec2_ansi/.ssh/authorized_keys
-            dest: /home/j/.ssh/authorized_keys
+    - name: Copy SSH Key from host to cloud
+      ansible.builtin.copy:
+        src: ~/cloud-gitlab/.ssh/authorized_keys
+        dest: /home/j/.ssh/authorized_keys
