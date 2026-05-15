@@ -1,0 +1,28 @@
+- name: Create user "j" if not created
+  hosts: "*"
+  become: yes
+  tasks:
+
+    - name: Check if user "j" exists
+      ansible.builtin.getent:
+        database: passwd
+        key: j
+      register: j_user
+      ignore_errors: yes
+
+    - name: Create "j" if non-existant
+      when: j_user is failed
+
+      block:
+        - name: Create user "j"
+          ansible.builtin.command:
+            cmd: useradd -m -G sudo -s /bin/bash j
+
+        - name: Create .ssh dir
+          ansible.builtin.command:
+            cmd: mkdir /home/j/.ssh
+
+        - name: Copy SSH Key from host to cloud
+          ansible.builtin.copy:
+            src: /home/j/ec2_ansi/.ssh/authorized_keys
+            dest: /home/j/.ssh/authorized_keys
