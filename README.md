@@ -142,6 +142,22 @@ graph TD
 
 ---
 
+# Common errors
+
+## hosts.ini not containing the output public ip address
+
+Occasionally when Terraform completes provisioning the Elastic IP for the EC2 instance, the IP isn't output when the generate_inventory.sh script is ran. The soultion I have been using in the meantime is to just run the script between provisioning the EC2 with Terraform and running the Ansible play.
+
+## "Handler not found"
+
+When running the ansible playbook for the first time "[ERROR]: The requested handler 'Reconfigure GitLab' was not found in either the main handlers list nor in the listening handlers list" appears. A solution that worked for me was making the mounting and file creation idempotent and just rerunning the play again. Gitlab reconfigures and starts up correctly. 
+
+---
+
+# Future Improvements
+
+HTTPS Support
+
 # What This Project Demonstrates
 
 This project highlights practical experience with:
