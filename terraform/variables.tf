@@ -36,11 +36,11 @@ variable "gitlab_frontend_priv_ip" {
 }
 
 variable "gl_db_username" {
-  type = string
+  type        = string
   description = "Username for Gitlab database"
 }
 
 variable "gl_db_passwd" {
-  type = string
+  type        = string
   description = "Password for Gitlab database"
 }

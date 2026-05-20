@@ -1,9 +1,9 @@
 resource "aws_subnet" "subnet_public" {
   vpc_id                                      = aws_vpc.vpc1.id
-  cidr_block                                  = var.subnet_public_cidr
+  cidr_block                                  = "10.0.1.0/24"
   map_public_ip_on_launch                     = true
   enable_resource_name_dns_a_record_on_launch = true
-  availability_zone = "us-east-2a"
+  availability_zone                           = "us-east-2a"
 
 
   tags = {
@@ -38,16 +38,16 @@ resource "aws_security_group" "ssh_in_all_out" {
   }
 
   ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 

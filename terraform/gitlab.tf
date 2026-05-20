@@ -1,7 +1,7 @@
 resource "aws_instance" "GitLab" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.micro"
-  key_name      = var.key_pair_name
+  ami               = data.aws_ami.ubuntu.id
+  instance_type     = "t3a.medium"
+  key_name          = var.key_pair_name
   availability_zone = "us-east-2a"
 
   network_interface {
@@ -16,13 +16,13 @@ resource "aws_instance" "GitLab" {
 
 resource "aws_volume_attachment" "gitlab_ebs_att" {
   device_name = "/dev/sdd"
-  volume_id = aws_ebs_volume.gitlab_ebs.id
+  volume_id   = aws_ebs_volume.gitlab_ebs.id
   instance_id = aws_instance.GitLab.id
 }
 
 resource "aws_ebs_volume" "gitlab_ebs" {
-  availability_zone = "us-east-2a"  
-  size = "30"
+  availability_zone = "us-east-2a"
+  size              = "30"
 }
 
 resource "aws_network_interface" "gitlab_netint" {
@@ -38,16 +38,16 @@ resource "aws_network_interface" "gitlab_netint" {
 # GitLab database inside of a private subnet
 
 resource "aws_db_instance" "gitlab_rds" {
-  db_name = "gitlab_database"
-  engine = "postgres"
-  instance_class = "db.t3.micro"
+  db_name              = "gitlab_database"
+  engine               = "postgres"
+  instance_class       = "db.t3.micro"
   db_subnet_group_name = aws_db_subnet_group.gl_subnet.id
-  username = var.gl_db_username
-  password = var.gl_db_passwd
+  username             = var.gl_db_username
+  password             = var.gl_db_passwd
 
-  allocated_storage = 20
-  storage_encrypted = true
-  multi_az = false
+  allocated_storage   = 20
+  storage_encrypted   = true
+  multi_az            = true
   skip_final_snapshot = true
 
   tags = {

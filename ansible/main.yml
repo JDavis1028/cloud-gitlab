@@ -2,11 +2,11 @@
   hosts: "*"
   become: true
   vars:
-    gitlab_domain: "16.58.240.91"
+    gitlab_domain: "18.223.26.44"
     gitlab_external_url: "http://{{ gitlab_domain }}"
   tasks:
 
-    - name: Mount opt in /dev/sdd
+    - name: Mount opt in /dev/nvme1n1
       block:
         - name: Format disk
           ansible.builtin.filesystem:
@@ -25,6 +25,45 @@
             fstype: ext4
             state: mounted
             opts: defaults
+    
+    - name: Create a swap file
+      block:
+        - name: Check if swapfile exists
+          ansible.builtin.stat:
+            path: /opt/swapfile
+          register: swapfile_stat
+
+        - name: Check if swap is active
+          ansible.builtin.command: swapon --show=NAME --noheadings
+          register: swap_active
+          changed_when: false
+
+        - name: allocate swap file
+          ansible.builtin.command: fallocate -l 4G /opt/swapfile
+          args:
+            creates: /opt/swapfile
+
+        - name: chmod
+          ansible.builtin.file: 
+            path: /opt/swapfile
+            mode: '0600'
+
+        - name: mkswap
+          ansible.builtin.command: mkswap /opt/swapfile
+          when: not swapfile_stat.stat.exists and '"/opt/swapfile" not in swap_active.stdout'
+          
+        - name: swapon
+          ansible.builtin.command: swapon /opt/swapfile
+          register: swapon_result
+          failed_when: swapon_result.rc != 0 and "busy" not in swapon_result.stderr
+
+        - name: Persist swap in fstab
+          ansible.builtin.mount:
+            path: swap
+            src: /opt/swapfile
+            fstype: swap
+            opts: defaults
+            state: present
 
     - name: update/upgrade all packages
       ansible.builtin.apt:

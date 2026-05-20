@@ -2,16 +2,20 @@ external_url = '{{ gitlab_external_url }}'
 
 # Nginx
 nginx['enable'] = true
-nginx['redirect_http_to_https'] = false
+nginx['redirect_http_to_https'] = trye
 
 # PostgreSQL
 postgresql['enable'] = true
+postgresql['max_connections'] = 100
+postgresql['shared_buffers'] = "256MB"
 
 # Redis
 redis['enable'] = true
 
 # Puma (Rails app server)
 puma['enable'] = true
+puma['worker_processes'] = 2
 
 # Sidekiq (background jobs)
 sidekiq['enable'] = true
+sidekiq['concurrency'] = 5

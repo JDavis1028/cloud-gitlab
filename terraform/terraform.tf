@@ -49,6 +49,6 @@ resource "null_resource" "generate_inventory" {
   }
 
   provisioner "local-exec" {
-    command = "~/cloud-gitlab/scipts/generate_inventory.sh"
+    command = "~/cloud-gitlab/scripts/generate_inventory.sh"
   }
 }
