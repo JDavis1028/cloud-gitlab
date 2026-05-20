@@ -166,4 +166,4 @@ MIT License
 
 Jackson Davis
 
-LinkedIn: https://linkedin.com/in/yourprofile
+LinkedIn: https://www.linkedin.com/in/jackson-davis-41b627355/
