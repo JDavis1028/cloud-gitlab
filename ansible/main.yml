@@ -1,0 +1,70 @@
+- name: Install GitLab CE
+  hosts: "*"
+  become: true
+  vars:
+    gitlab_domain: "16.58.240.91"
+    gitlab_external_url: "http://{{ gitlab_domain }}"
+  tasks:
+
+    - name: Mount opt in /dev/sdd
+      block:
+        - name: Format disk
+          ansible.builtin.filesystem:
+            fstype: ext4
+            dev: /dev/nvme1n1
+    
+        - name: Create mount point for app data
+          ansible.builtin.file:
+            path: /opt
+            state: directory
+
+        - name: Mount large disk on /opt
+          ansible.builtin.mount:
+            path: /opt
+            src: /dev/nvme1n1
+            fstype: ext4
+            state: mounted
+            opts: defaults
+
+    - name: update/upgrade all packages
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Install prerequisites
+      ansible.builtin.apt:
+        name:
+          - curl
+          - openssh-server
+          - ca-certificates
+          - tzdata
+          - perl
+          - postfix
+        state: present
+        update_cache: true
+    
+    - name: Install GitLab pkg repository
+      ansible.builtin.shell:
+        curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | bash
+      args:
+        creates: /etc/apt/sources.list.d/gitlab_gitlab-ce.list
+
+    - name: Install Gitlab CE
+      ansible.builtin.apt:
+        name: gitlab-ce
+        state: present
+      # environment:
+        # EXTERNAL_URL: "{{ gitlab_external_url }}"
+
+    - name: Deploy gitlab config
+      ansible.builtin.template:
+        src: templates/gitlab.rb.j2
+        dest: /etc/gitlab/gitlab.rb
+        owner: root
+        group: root
+        mode: '0600'
+      notify: Reconfigure GitLab
+
+  handlers:
+    - name: Reconfigure Gitlab
+      ansible.builtin.command: gitlab-ctl reconfigure

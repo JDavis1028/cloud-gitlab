@@ -3,6 +3,8 @@ resource "aws_subnet" "subnet_public" {
   cidr_block                                  = var.subnet_public_cidr
   map_public_ip_on_launch                     = true
   enable_resource_name_dns_a_record_on_launch = true
+  availability_zone = "us-east-2a"
+
 
   tags = {
     Name = "Public Subnet"
@@ -35,6 +37,20 @@ resource "aws_security_group" "ssh_in_all_out" {
     cidr_blocks = [var.my_public_ip]
   }
 
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -44,7 +60,7 @@ resource "aws_security_group" "ssh_in_all_out" {
 }
 
 resource "aws_eip" "eip1" {
-  instance   = aws_instance.ec2_public_28.id
+  instance   = aws_instance.GitLab.id
   domain     = "vpc"
   depends_on = [aws_internet_gateway.igw]
 

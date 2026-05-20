@@ -30,14 +30,9 @@ variable "my_public_ip" {
   sensitive   = true
 }
 
-variable "pub28_priv_ip" {
+variable "gitlab_frontend_priv_ip" {
   type        = string
-  description = "EC2 public 28 private IP"
-}
-
-variable "priv28_priv_ip" {
-  type        = string
-  description = "EC2 Private 28 private IP"
+  description = "Gitlab frontend private IP"
 }
 
 variable "gl_db_username" {

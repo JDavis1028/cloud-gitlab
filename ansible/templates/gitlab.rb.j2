@@ -1,0 +1,17 @@
+external_url = '{{ gitlab_external_url }}'
+
+# Nginx
+nginx['enable'] = true
+nginx['redirect_http_to_https'] = false
+
+# PostgreSQL
+postgresql['enable'] = true
+
+# Redis
+redis['enable'] = true
+
+# Puma (Rails app server)
+puma['enable'] = true
+
+# Sidekiq (background jobs)
+sidekiq['enable'] = true
