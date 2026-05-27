@@ -2,7 +2,10 @@ external_url = '{{ gitlab_external_url }}'
 
 # Nginx
 nginx['enable'] = true
-nginx['redirect_http_to_https'] = trye
+nginx['redirect_http_to_https'] = true
+
+# LetsEncrypt
+# letsencrypt['enable'] = true
 
 # PostgreSQL
 postgresql['enable'] = true
@@ -19,3 +22,7 @@ puma['worker_processes'] = 2
 # Sidekiq (background jobs)
 sidekiq['enable'] = true
 sidekiq['concurrency'] = 5
+
+# Disable registry (was causing crashing)
+gitlab_rails['registry_enabled'] = false
+registry['enable'] = false

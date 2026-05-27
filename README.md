@@ -156,7 +156,8 @@ When running the ansible playbook for the first time "[ERROR]: The requested han
 
 # Future Improvements
 
-HTTPS Support
+- HTTPS Support
+- Deploy Script including ssh key generation
 
 # What This Project Demonstrates
 

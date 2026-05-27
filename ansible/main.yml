@@ -1,11 +1,16 @@
 - name: Install GitLab CE
   hosts: "*"
   become: true
+  vars_files:
+    - vars.yml
   vars:
-    gitlab_domain: "18.223.26.44"
-    gitlab_external_url: "http://{{ gitlab_domain }}"
-  tasks:
+    gitlab_external_url: "https://{{ gitlab_domain }}"
 
+  handlers:
+    - name: Reconfigure Gitlab
+      ansible.builtin.command: gitlab-ctl reconfigure
+
+  tasks:
     - name: Mount opt in /dev/nvme1n1
       block:
         - name: Format disk
@@ -50,7 +55,9 @@
 
         - name: mkswap
           ansible.builtin.command: mkswap /opt/swapfile
-          when: not swapfile_stat.stat.exists and '"/opt/swapfile" not in swap_active.stdout'
+          when: 
+            - swapfile_stat.stat.exists
+            - '"/opt/swapfile" not in swap_active.stdout'
           
         - name: swapon
           ansible.builtin.command: swapon /opt/swapfile
@@ -103,7 +110,3 @@
         group: root
         mode: '0600'
       notify: Reconfigure GitLab
-
-  handlers:
-    - name: Reconfigure Gitlab
-      ansible.builtin.command: gitlab-ctl reconfigure
